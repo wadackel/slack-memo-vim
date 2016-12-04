@@ -1,0 +1,164 @@
+*slackmemo-vim.txt*                  Simple memo manager with Vim using Slack.
+
+Version: 0.0.1
+Author:  tsuyoshiwada
+
+==============================================================================
+CONTENTS                                                 *slack-memo-contents*
+
+        1. Usage                               |slack-memo-usage|
+        2. Install                             |slack-memo-install|
+        3. Requirements                        |slack-memo-requirements|
+        4. Setup                               |slack-memo-setup|
+        5. Variables                           |slack-memo-variables|
+        6. License                             |slack-memo-license|
+        7. Tips                                |slack-memo-tips|
+
+==============================================================================
+USAGE                                                       *slack-memo-usage*
+
+- Post a memo on Slack. >
+
+      :SlackMemoPost
+<
+- List memos on Slack. >
+
+      :SlackMemoList
+<
+      - Keymaps in the memo list.
+
+              Key        Description ~
+             <CR>        Open memo on cursor.
+              o          Same as above...
+             <Esc>       Close memo on cursor.
+              q          Same as above...
+              d          Delete memo on cursor.
+              y          Yank memo on cursor.
+              r          Update list window.
+
+- Update a memo on Slack.
+  You can update the gist with the {:w} command within the memo buffer.
+
+==============================================================================
+INSTALL                                                   *slack-memo-install*
+
+It's easy to install using plugin manager.
+Depending on your plugin manager, please add the following to .vimrc.
+
+- Install with dein. (https://github.com/Shougo/dein.vim) >
+
+        call dein#add('tsuyoshiwada/slack-memo-vim', {
+          \ 'depends': 'mattn/webapi-vim'
+          \ })
+<
+- Install with NeoBundle. (https://github.com/Shougo/neobundle.vim) >
+
+        NeoBundle 'tsuyoshiwada/slack-memo-vim', {
+          \ 'depends': 'mattn/webapi-vim'
+          \ }
+<
+You need to install webapi-vim also:
+        http://www.vim.org/scripts/script.php?script_id=4019
+
+If you want to use latest one:
+        https://github.com/mattn/webapi-vim
+
+==============================================================================
+REQUIREMENTS                                         *slack-memo-requirements*
+
+- curl command (http://curl.haxx.se/)
+- webapi-vim (https://github.com/mattn/webapi-vim)
+
+==============================================================================
+SETUP                                                       *slack-memo-setup*
+
+You need a token to use Slack Web API. (https://api.slack.com/web)
+Please set your token on |g:slack_memo_token|.
+>
+        let g:slack_memo_token = '<YOUR_TOKEN>'
+<
+Please set channel ID in |g:slack_memo_channel|.
+If you do not know the ID right away,
+you can easily check with the channel.list tester.
+(https://api.slack.com/methods/channels.list/test)
+>
+        let g:slack_memo_channel = '<YOUR_MEMO_CHANNEL_ID>'
+<
+Setup is complete!
+
+==============================================================================
+VARIABLES                                               *slack-memo-variables*
+
+g:slack_memo_token                                        *g:slack_memo_token*
+        Please specify the token for Slack Web API.
+        Refer to Slack for acquisition method. (https://api.slack.com/web)
+
+        Required.
+
+g:slack_memo_channel                                    *g:slack_memo_channel*
+        Please specify channel ID with string.
+
+        Required.
+
+g:slack_memo_bot_username                          *g:slack_memo_bot_username*
+        Please specify the name of the user who posts the memo.
+
+        Default value is 'Vim (bot)'.
+
+g:slack_memo_bot_icon_url                          *g:slack_memo_bot_icon_url*
+        Please specify the user icon.
+
+        Default value is ''.
+
+g:slack_memo_bot_icon_emoji                      *g:slack_memo_bot_icon_emoji*
+        Please specify the user emoji.
+        Default value is ''.
+
+g:slack_memo_list_count                              *g:slack_memo_list_count*
+        Please specify length to display in list of memos.
+        NOTE: between 1 and 1000.
+
+        Default value is 1000.
+
+==============================================================================
+LICENSE                                                   *slack-memo-license*
+
+Copyright 2016 by tsuyoshiwada.
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+   this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+OF THE POSSIBILITY OF SUCH DAMAGE.
+
+==============================================================================
+TIPS                                                         *slack-memo-tips*
+
+You can post / list easily with the following keymap.
+>
+        nnoremap smp :SlackMemoPost<CR>
+        nnoremap sml :SlackMemoList<CR>
+<
+Support GFM TODO list.
+Posting following memo will be displayed with emoji on Slack.
+>
+        * [x] Done1
+        * [x] Done2
+        * [ ] TODO...
+<
+
+ vim:tw=78:ts=8:ft=help:norl:ai:et
