@@ -125,6 +125,12 @@ Support GFM TODO list. Posting following memo will be displayed with emoji on Sl
 
 
 
+## License
+
+See the [LICENSE](https://raw.githubusercontent.com/tsuyoshiwada/slack-memo-vim/master/LICENSE).
+
+
+
 ## TODO
 
 * [ ] Support vertical split list window.
