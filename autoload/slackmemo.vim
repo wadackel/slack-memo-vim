@@ -297,7 +297,6 @@ endfunction
 
 function! s:GetSlackMemoByTS(ts)
   if !exists('b:messages')
-    echo "undefined"
     return 0
   endif
 
@@ -318,23 +317,14 @@ function! s:SlackMemoOpen(ts)
     endif
     setlocal modifiable
   else
-    let found = -1
-    for wnr in range(1, winnr('$'))
-      let bnr = winbufnr(wnr)
-      if bnr != -1 && !empty(getbufvar(bnr, 'slackmemo'))
-        let found = wnr
-        break
+    for bufnr in range(1, bufnr('$'))
+      if bufname == bufname(bufnr)
+        silent exe 'bw!' bufnr
       endif
     endfor
 
-    if found != -1
-      echo 'Found!'
-      exe found 'wincmd w'
-      setlocal modifiable
-    else
-      exec 'silent noautocmd rightbelow new'
-      bw!
-    endif
+    exec 'silent noautocmd rightbelow new'
+    bw!
 
     setlocal noswapfile
     silent exec 'noautocmd file' bufname
