@@ -11,4 +11,5 @@ endif
 let g:loaded_slackmemo_vim = 1
 
 command! -nargs=0 SlackMemoPost :call slackmemo#post()
-command! -nargs=0 SlackMemoList :call slackmemo#list()
+command! -nargs=0 SlackMemoList :call slackmemo#list('default')
+command! -nargs=0 SlackMemoCtrlP :call slackmemo#list('CtrlP')

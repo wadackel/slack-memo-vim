@@ -23,10 +23,16 @@ List memos on Slack.
 :SlackMemoList
 ```
 
+List memos on Slack with CtrlP.
+
+```vim
+:SlackMemoCtrlP
+```
+
 
 ### Keymaps in the memo list
 
-The following keymaps are available in the buffer of the memo list.
+The following keymaps are available in the buffer of the memo list. It does not work with CtrlP.
 
 | key            | description             |
 |:---------------|:------------------------|
@@ -133,6 +139,7 @@ See the [LICENSE](https://raw.githubusercontent.com/tsuyoshiwada/slack-memo-vim/
 
 ## TODO
 
+* [x] Support [CtrlP](https://github.com/ctrlpvim/ctrlp.vim).
 * [ ] Support vertical split list window.
 * [ ] List more than 1000 memos.
 

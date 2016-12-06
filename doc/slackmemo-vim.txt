@@ -39,6 +39,11 @@ USAGE                                                       *slack-memo-usage*
 - Update a memo on Slack.
   You can update the gist with the {:w} command within the memo buffer.
 
+- List memos on Slack with CtrlP. >
+
+      :SlackMemoCtrlP
+<
+
 ==============================================================================
 INSTALL                                                   *slack-memo-install*
 

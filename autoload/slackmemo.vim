@@ -53,11 +53,6 @@ let s:slackapi = 'https://slack.com/api'
 
 
 " Utilities
-function! s:escape_ts(ts)
-  return substitute(a:ts, '\.', '\\.', 'g')
-endfunction
-
-
 function! s:format_memo(memo) abort
   let ts = a:memo.ts
   let datetime = strftime("%Y-%m-%d %H:%M:%S", substitute(ts, '^\(\d\+\)\.\d\+$', '\1', 'g'))
@@ -67,7 +62,7 @@ function! s:format_memo(memo) abort
 endfunction
 
 
-function! s:compare_memo(memo, ts, cond)
+function! slackmemo#compareMemoWithTS(memo, ts, cond)
   return a:cond == 0 ? a:memo.ts == a:ts : a:memo.ts != a:ts
 endfunction
 
@@ -92,13 +87,6 @@ function! s:encode_memo_list(line)
 endfunction
 
 
-function! s:decode_memo(memo)
-  let text = webapi#html#decodeEntityReference(a:memo.text)
-  let text = join(map(split(text, "\n"), 's:decode_memo_line(v:val)'), "\n")
-  let a:memo.text = text
-  return a:memo
-endfunction
-
 function! s:decode_memo_line(line)
   let line = a:line
 
@@ -114,9 +102,20 @@ endfunction
 
 
 " SlackMemo
-function! slackmemo#list() abort
-  redraw | echon 'Listing slack memo... '
+function! slackmemo#escapeTS(ts)
+  return substitute(a:ts, '\.', '\\.', 'g')
+endfunction
 
+
+function! slackmemo#decodeMemo(memo)
+  let text = webapi#html#decodeEntityReference(a:memo.text)
+  let text = join(map(split(text, "\n"), 's:decode_memo_line(v:val)'), "\n")
+  let a:memo.text = text
+  return a:memo
+endfunction
+
+
+function! slackmemo#fetch() abort
   let res = webapi#http#get(s:slackapi . '/channels.history', {
         \ 'token': g:slack_memo_token,
         \ 'channel': g:slack_memo_channel,
@@ -124,16 +123,40 @@ function! slackmemo#list() abort
         \ })
   let res = webapi#json#decode(res.content)
 
+  if res.ok
+    let messages = map(copy(res.messages), 'slackmemo#decodeMemo(v:val)')
+    let messages = filter(res.messages, '!empty(v:val.text)')
+    let res.messages = messages
+  endif
+
+  return res
+endfunction
+
+
+function! slackmemo#list(mode) abort
+  redraw | echon 'Listing slack memo... '
+
+  let res = slackmemo#fetch()
+
   if !res.ok
     redraw | echon 'Bad request...'
     return
   endif
 
-  call s:SlackMemoListOpen()
-  let oldpos = getpos('.')
-  let b:messages = map(res.messages, 's:decode_memo(v:val)')
-  call s:SlackMemoListRender()
-  call cursor(oldpos[1], oldpos[2])
+  if a:mode == "CtrlP"
+    if globpath(&rtp, 'autoload/ctrlp.vim') ==# ''
+        echohl ErrorMsg | echomsg 'SlackMemo: require ''CtrlP'', install https://github.com/ctrlpvim/ctrlp.vim' | echohl None
+      return
+    endif
+    call ctrlp#init(ctrlp#slackmemo#id())
+
+  else
+    call s:SlackMemoListOpen()
+    let oldpos = getpos('.')
+    let b:messages = res.messages
+    call s:SlackMemoListRender()
+    call cursor(oldpos[1], oldpos[2])
+  endif
 endfunction
 
 
@@ -171,6 +194,37 @@ function! slackmemo#post() abort
   call s:SlackMemoAppend(res.message)
 
   redraw | echon 'Done !!'
+endfunction
+
+
+function! slackmemo#open(memo)
+  let bufname = s:bufprefix . a:memo.ts . '.md'
+  let winnum = bufwinnr(bufnr(bufname))
+
+  if winnum != -1
+    if winnum != bufwinnr('%')
+      exe winnum 'wincmd w'
+    endif
+    setlocal modifiable
+  else
+    for bufnr in range(1, bufnr('$'))
+      if bufname == bufname(bufnr)
+        silent exe 'bw!' bufnr
+      endif
+    endfor
+
+    exec 'silent noautocmd rightbelow new'
+    bw!
+
+    setlocal noswapfile
+    silent exec 'noautocmd file' bufname
+  endif
+
+  filetype detect
+  silent %d _
+
+  call setline(1, split(a:memo.text, "\n"))
+  call s:SlackMemoCurrentBufferToEditable()
 endfunction
 
 
@@ -212,7 +266,7 @@ function! s:SlackMemoListRender()
   setlocal modifiable
   silent %d _
 
-  let lines = map(filter(messages, '!empty(v:val.text)'), 's:format_memo(v:val)')
+  let lines = map(messages, 's:format_memo(v:val)')
   call setline(1, split(join(lines, "\n"), "\n"))
   sort! n /\%2c/
 
@@ -301,40 +355,14 @@ function! s:GetSlackMemoByTS(ts)
   endif
 
   let messages = deepcopy(b:messages)
-  let messages = filter(messages, 's:compare_memo(v:val, "'.s:escape_ts(a:ts).'", 0)')
+  let messages = filter(messages, 'slackmemo#compareMemoWithTS(v:val, "'.slackmemo#escapeTS(a:ts).'", 0)')
   return len(messages) > -1 ? messages[0] : 0
 endfunction
 
 
 function! s:SlackMemoOpen(ts)
   let memo = s:GetSlackMemoByTS(a:ts)
-  let bufname = s:bufprefix . a:ts . '.md'
-  let winnum = bufwinnr(bufnr(bufname))
-
-  if winnum != -1
-    if winnum != bufwinnr('%')
-      exe winnum 'wincmd w'
-    endif
-    setlocal modifiable
-  else
-    for bufnr in range(1, bufnr('$'))
-      if bufname == bufname(bufnr)
-        silent exe 'bw!' bufnr
-      endif
-    endfor
-
-    exec 'silent noautocmd rightbelow new'
-    bw!
-
-    setlocal noswapfile
-    silent exec 'noautocmd file' bufname
-  endif
-
-  filetype detect
-  silent %d _
-
-  call setline(1, split(memo.text, "\n"))
-  call s:SlackMemoCurrentBufferToEditable()
+  call slackmemo#open(memo)
 endfunction
 
 
