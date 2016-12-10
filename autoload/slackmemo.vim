@@ -333,7 +333,7 @@ function! s:SlackMemoListAction(mode)
     call s:SlackMemoListClose()
 
   elseif a:mode == 1
-    if confirm('Really force delete memo?', "&Yes\n&No", 2) != -1
+    if confirm('Really force delete memo?', "&Yes\n&No", 2) == 1
       call s:SlackMemoDelete(ts)
     endif
 
