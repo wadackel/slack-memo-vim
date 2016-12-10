@@ -164,7 +164,7 @@ function! slackmemo#list(mode) abort
   endif
 endfunction
 
-function! slackmemo#search(...) abort
+function! slackmemo#search(mode, ...) abort
   let query = join(a:000, ' ')
   let res = slackmemo#chnnel_name()
 
