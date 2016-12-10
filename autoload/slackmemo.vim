@@ -69,11 +69,11 @@ endfunction
 
 function! s:decode_memo_text(text)
   let text = a:text
-  let text = join(map(split(text, "\n"), 's:encode_memo_list(v:val)'), "\n")
+  let text = join(map(split(text, "\n"), 's:encode_memo_line(v:val)'), "\n")
   return text
 endfunction
 
-function! s:encode_memo_list(line)
+function! s:encode_memo_line(line)
   let line = a:line
 
   " GFM - Checkbox
@@ -95,6 +95,11 @@ function! s:decode_memo_line(line)
     let line = substitute(line, '\([\*\-]\) :white_large_square: ', '\1 [ ]', '')
   elseif match(line, '[\*\-] :ballot_box_with_check: ') > -1
     let line = substitute(line, '\([\*\-]\) :ballot_box_with_check: ', '\1 [x]', '')
+  endif
+
+  " URL
+  if match(line, '<https\?:\/\/\S\+>') > -1
+    let line = substitute(line, '<\(https\?:\/\/\S\+\)>', '\1', 'g')
   endif
 
   return line
@@ -288,7 +293,7 @@ function! s:SlackMemoListRender()
   nnoremap <silent> <buffer> <esc> :bw<cr>
   nnoremap <silent> <buffer> q :bw<cr>
 
-  redraw | echo ''
+  " redraw | echo ''
 endfunction
 
 
