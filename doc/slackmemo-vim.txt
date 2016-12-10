@@ -43,6 +43,9 @@ USAGE                                                       *slack-memo-usage*
 
       :SlackMemoCtrlP
 <
+- List search result memos on Slack. >
+
+      :SlackMemoSearch search query parameters
 
 ==============================================================================
 INSTALL                                                   *slack-memo-install*
