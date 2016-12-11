@@ -1,6 +1,6 @@
 "=============================================================================
 " File: slack-memo.vim
-" Version: 0.1.1
+" Version: 0.1.2
 " Author: tsuyoshiwada
 " WebPage: http://github.com/tsuyoshiwada/slack-memo-vim
 " License: BSD
@@ -164,6 +164,65 @@ function! slackmemo#list(mode) abort
   endif
 endfunction
 
+function! slackmemo#search(mode, ...) abort
+  let query = join(a:000, ' ')
+  let res = slackmemo#chnnel_name()
+
+  if !res.ok
+    redraw | echon 'Invalid channel id...'
+    return
+  endif
+
+  let res = slackmemo#search_messages(res.channel.name, query)
+  call s:SlackMemoListOpen()
+  let oldpos = getpos('.')
+  let b:messages = slackmemo#matches2memos(res.messages.matches)
+  call s:SlackMemoListRender()
+  call cursor(oldpos[1], oldpos[2])
+endfunction
+
+function! slackmemo#search_messages(channel_name, query) abort
+
+  let query = 'in:' . a:channel_name . ' ' . a:query
+
+  let res = webapi#http#get(s:slackapi . '/search.messages', {
+        \ 'token': g:slack_memo_token,
+        \ 'query': query
+        \ })
+  let res = webapi#json#decode(res.content)
+
+  if res.ok
+    let matches = map(copy(res.messages.matches), 'slackmemo#decodeMemo(v:val)')
+    let messages = filter(res.messages.matches, '!empty(v:val.text)')
+    let res.messages.matches = matches
+  endif
+
+  return res
+endfunction
+
+function! slackmemo#chnnel_name()
+  let res = webapi#http#get(s:slackapi . '/channels.info', {
+        \ 'token': g:slack_memo_token,
+        \ 'channel': g:slack_memo_channel
+        \ })
+  let res = webapi#json#decode(res.content)
+
+  return res
+endfunction
+
+function! slackmemo#matches2memos(matches) abort
+  let messages = []
+  for m in a:matches
+    let message = {
+        \ 'type': m.type,
+        \ 'ts':   m.ts,
+        \ 'user': m.user,
+        \ 'text': m.text
+        \ }
+    call add(messages, message)
+  endfor
+  return messages
+endfunction
 
 function! slackmemo#post() abort
   let text =  join(getline(0, '$'), "\n")

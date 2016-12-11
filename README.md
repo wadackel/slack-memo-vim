@@ -29,6 +29,11 @@ List memos on Slack with CtrlP.
 :SlackMemoCtrlP
 ```
 
+List search result memos on Slack
+```vim
+:SlackMemoSearch search query
+```
+
 
 ### Keymaps in the memo list
 
