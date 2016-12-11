@@ -1,3 +1,8 @@
+## 0.1.2
+
+* Add `:SlackMemoSearch` method. Thanks [@h-michael](https://github.com/h-michael) !.
+
+
 ## 0.1.1
 
 * Fix url formating decode
@@ -10,7 +15,7 @@
 * Support CtrlP lists.
 
 
-## 0.1.1
+## 0.0.2
 
 * Fix error when buffer with same name already exists.
 
