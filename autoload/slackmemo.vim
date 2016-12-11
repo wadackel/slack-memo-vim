@@ -189,7 +189,7 @@ function! slackmemo#search_messages(channel_name, query) abort
   let res = webapi#http#get(s:slackapi . '/search.messages', {
         \ 'token': g:slack_memo_token,
         \ 'query': query,
-        \ 'count': s:slackmemo_list_count
+        \ 'count': g:slack_memo_list_count
         \ })
   let res = webapi#json#decode(res.content)
 
