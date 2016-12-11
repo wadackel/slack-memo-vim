@@ -164,6 +164,7 @@ function! slackmemo#list(mode) abort
   endif
 endfunction
 
+
 function! slackmemo#search(mode, ...) abort
   let query = join(a:000, ' ')
   let res = slackmemo#chnnel_name()
@@ -181,13 +182,14 @@ function! slackmemo#search(mode, ...) abort
   call cursor(oldpos[1], oldpos[2])
 endfunction
 
-function! slackmemo#search_messages(channel_name, query) abort
 
+function! slackmemo#search_messages(channel_name, query) abort
   let query = 'in:' . a:channel_name . ' ' . a:query
 
   let res = webapi#http#get(s:slackapi . '/search.messages', {
         \ 'token': g:slack_memo_token,
-        \ 'query': query
+        \ 'query': query,
+        \ 'count': s:slackmemo_list_count
         \ })
   let res = webapi#json#decode(res.content)
 
@@ -200,6 +202,7 @@ function! slackmemo#search_messages(channel_name, query) abort
   return res
 endfunction
 
+
 function! slackmemo#chnnel_name()
   let res = webapi#http#get(s:slackapi . '/channels.info', {
         \ 'token': g:slack_memo_token,
@@ -209,6 +212,7 @@ function! slackmemo#chnnel_name()
 
   return res
 endfunction
+
 
 function! slackmemo#matches2memos(matches) abort
   let messages = []
@@ -223,6 +227,7 @@ function! slackmemo#matches2memos(matches) abort
   endfor
   return messages
 endfunction
+
 
 function! slackmemo#post() abort
   let text =  join(getline(0, '$'), "\n")
