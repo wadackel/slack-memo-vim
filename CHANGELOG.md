@@ -1,3 +1,8 @@
+## 0.1.3
+
+* Fix typo...
+
+
 ## 0.1.2
 
 * Add `:SlackMemoSearch` method. Thanks [@h-michael](https://github.com/h-michael) !.

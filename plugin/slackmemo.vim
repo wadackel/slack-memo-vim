@@ -1,6 +1,6 @@
 "=============================================================================
 " File: slack-memo.vim
-" Version: 0.1.2
+" Version: 0.1.3
 " Author: tsuyoshiwada
 " WebPage: http://github.com/tsuyoshiwada/slack-memo-vim
 " License: BSD
