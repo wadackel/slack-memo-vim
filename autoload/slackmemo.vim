@@ -357,7 +357,7 @@ function! s:SlackMemoListRender()
   nnoremap <silent> <buffer> <esc> :bw<cr>
   nnoremap <silent> <buffer> q :bw<cr>
 
-  " redraw | echo ''
+  redraw | echo ''
 endfunction
 
 
@@ -413,7 +413,7 @@ function! s:SlackMemoListAction(mode)
     redraw | echon 'Yanked!'
 
   elseif a:mode == 3
-    call slackmemo#list()
+    call slackmemo#list("default")
   endif
 endfunction
 
