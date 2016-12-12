@@ -1,3 +1,9 @@
+## 0.2.0
+
+* Fix refetch list errors.
+* Fix versioning. (Should made it 0.2.0 when added `:SlackMemoSearch`.)
+
+
 ## 0.1.3
 
 * Fix typo...

@@ -1,6 +1,6 @@
 *slackmemo-vim.txt*                  Simple memo manager with Vim using Slack.
 
-Version: 0.1.3
+Version: 0.2.0
 Author:  tsuyoshiwada
 
 ==============================================================================
