@@ -145,6 +145,9 @@ See the [LICENSE](https://raw.githubusercontent.com/tsuyoshiwada/slack-memo-vim/
 ## TODO
 
 * [x] Support [CtrlP](https://github.com/ctrlpvim/ctrlp.vim).
+* [ ] Support sort list.
 * [ ] Support vertical split list window.
+* [ ] Support open memo in new tab.
+* [ ] Delete multiple memos.
 * [ ] List more than 1000 memos.
 
