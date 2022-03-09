@@ -1,6 +1,6 @@
 "=============================================================================
 " File: slack-memo.vim
-" Version: 0.2.0
+" Version: 0.2.1
 " Author: tsuyoshiwada
 " WebPage: http://github.com/tsuyoshiwada/slack-memo-vim
 " License: BSD
@@ -121,7 +121,7 @@ endfunction
 
 
 function! slackmemo#fetch() abort
-  let res = webapi#http#get(s:slackapi . '/channels.history', {
+  let res = webapi#http#get(s:slackapi . '/conversations.history', {
         \ 'token': g:slack_memo_token,
         \ 'channel': g:slack_memo_channel,
         \ 'count': g:slack_memo_list_count
@@ -204,7 +204,7 @@ endfunction
 
 
 function! slackmemo#chnnel_name()
-  let res = webapi#http#get(s:slackapi . '/channels.info', {
+  let res = webapi#http#get(s:slackapi . '/conversations.info', {
         \ 'token': g:slack_memo_token,
         \ 'channel': g:slack_memo_channel
         \ })
