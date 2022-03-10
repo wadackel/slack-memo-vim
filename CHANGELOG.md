@@ -1,3 +1,8 @@
+## 0.2.1
+
+* Replace `channels.xxx` with `conversations.xxx`, Thanks [cympfh](https://github.com/cympfh) !
+
+
 ## 0.2.0
 
 * Fix refetch list errors.
